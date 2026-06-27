@@ -471,12 +471,12 @@ La aplicación puede interpretar categoría rápida desde el nombre del gasto.
 
 ### Etapa 5: Tabla de gastos con datos mockeados
 
-* [ ] Crear tabla de gastos.
-* [ ] Mostrar fecha, descripción limpia, categoría, monto y estado de reembolso.
-* [ ] Mostrar si el gasto es reembolsable.
-* [ ] Mostrar nombre deudor si existe.
-* [ ] Usar datos mockeados.
-* [ ] Permitir seleccionar un gasto para ver detalle básico.
+* [x] Crear tabla de gastos.
+* [x] Mostrar fecha, descripción limpia, categoría, monto y estado de reembolso.
+* [x] Mostrar si el gasto es reembolsable.
+* [x] Mostrar nombre deudor si existe.
+* [x] Usar datos mockeados.
+* [x] Permitir seleccionar un gasto para ver detalle básico.
 
 Resultado esperado:
 

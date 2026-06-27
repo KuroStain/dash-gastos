@@ -90,12 +90,78 @@ const spendingByCategory = [
 ]
 
 const recentExpenses = [
-  { id: 1, date: "2026-06-24", description: "Almuerzo McDonalds con amigos", category: "Almuerzo", amount: 18500, reimbursable: true, debtor: "Nico", status: "Pendiente" },
-  { id: 2, date: "2026-06-23", description: "Supermercado semana", category: "Supermercado", amount: 72450, reimbursable: false, debtor: "", status: "No aplica" },
-  { id: 3, date: "2026-06-22", description: "Cuenta luz", category: "Cuenta", amount: 38990, reimbursable: false, debtor: "", status: "No aplica" },
-  { id: 4, date: "2026-06-21", description: "Entrada concierto", category: "Juego", amount: 45000, reimbursable: true, debtor: "Vale", status: "Pagado parcial" },
-  { id: 5, date: "2026-06-20", description: "Farmacia resfrío", category: "Farmacia", amount: 16480, reimbursable: false, debtor: "", status: "No aplica" },
-  { id: 6, date: "2026-06-19", description: "Transporte oficina", category: "Transporte", amount: 7200, reimbursable: false, debtor: "", status: "No aplica" },
+  {
+    id: 1,
+    date: "2026-06-24",
+    originalDescription: "Almuerzo McDonalds con amigos",
+    cleanDescription: "McDonalds con amigos",
+    quickCategoryId: 10,
+    category: "Almuerzo",
+    amount: 18500,
+    reimbursable: true,
+    debtor: "Nico",
+    reimbursementStatus: "Pendiente",
+  },
+  {
+    id: 2,
+    date: "2026-06-23",
+    originalDescription: "Supermercado semana",
+    cleanDescription: "semana",
+    quickCategoryId: 13,
+    category: "Supermercado",
+    amount: 72450,
+    reimbursable: false,
+    debtor: null,
+    reimbursementStatus: "No aplica",
+  },
+  {
+    id: 3,
+    date: "2026-06-22",
+    originalDescription: "Cuenta luz",
+    cleanDescription: "luz",
+    quickCategoryId: 23,
+    category: "Cuenta",
+    amount: 38990,
+    reimbursable: false,
+    debtor: null,
+    reimbursementStatus: "No aplica",
+  },
+  {
+    id: 4,
+    date: "2026-06-21",
+    originalDescription: "Juego entrada concierto",
+    cleanDescription: "entrada concierto",
+    quickCategoryId: 18,
+    category: "Juego",
+    amount: 45000,
+    reimbursable: true,
+    debtor: "Vale",
+    reimbursementStatus: "Pagado parcialmente",
+  },
+  {
+    id: 5,
+    date: "2026-06-20",
+    originalDescription: "Farmacia resfrío",
+    cleanDescription: "resfrío",
+    quickCategoryId: 15,
+    category: "Farmacia",
+    amount: 16480,
+    reimbursable: false,
+    debtor: null,
+    reimbursementStatus: "No aplica",
+  },
+  {
+    id: 6,
+    date: "2026-06-19",
+    originalDescription: "Pagué cuenta de la luz",
+    cleanDescription: "Pagué cuenta de la luz",
+    quickCategoryId: null,
+    category: null,
+    amount: 7200,
+    reimbursable: false,
+    debtor: null,
+    reimbursementStatus: "No aplica",
+  },
 ]
 
 const incomes = [
@@ -350,51 +416,94 @@ function NotificationPanel({
   )
 }
 
-function ExpensesTable({ compact = false }: { compact?: boolean }) {
+function getReimbursementTone(status: string) {
+  if (status === "Pagado") return "gain"
+  if (status === "Pendiente" || status === "Pagado parcialmente") return "warning"
+  return "neutral"
+}
+
+function ExpensesTable({ compact = false, showDetail = false }: { compact?: boolean; showDetail?: boolean }) {
+  const rows = recentExpenses.slice(0, compact ? 4 : recentExpenses.length)
+  const [selectedExpenseId, setSelectedExpenseId] = useState(rows[0]?.id ?? null)
+  const selectedExpense = rows.find((expense) => expense.id === selectedExpenseId) ?? rows[0]
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border/50">
-            <th className="p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans">Fecha</th>
-            <th className="p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans">Descripción</th>
-            <th className="hidden p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans sm:table-cell">Categoría</th>
-            <th className="hidden p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans md:table-cell">Reembolso</th>
-            <th className="p-4 text-right text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans">Monto</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recentExpenses.slice(0, compact ? 4 : recentExpenses.length).map((expense, i) => (
-            <motion.tr
-              key={expense.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: i * 0.04 }}
-              className="border-b border-border/30 transition-colors hover:bg-accent/20"
-            >
-              <td className="whitespace-nowrap p-4 text-xs text-muted-foreground font-mono">{expense.date}</td>
-              <td className="p-4">
-                <p className="font-semibold text-foreground font-sans">{expense.description}</p>
-                <p className="mt-0.5 text-[11px] text-muted-foreground sm:hidden">{expense.category}</p>
-              </td>
-              <td className="hidden p-4 sm:table-cell">
-                <StatusBadge>{expense.category}</StatusBadge>
-              </td>
-              <td className="hidden p-4 md:table-cell">
-                {expense.reimbursable ? (
-                  <div className="flex items-center gap-2">
-                    <StatusBadge tone={expense.status === "Pendiente" ? "warning" : "gain"}>{expense.status}</StatusBadge>
-                    <span className="text-xs text-muted-foreground">{expense.debtor}</span>
-                  </div>
-                ) : (
-                  <span className="text-xs text-muted-foreground">No aplica</span>
-                )}
-              </td>
-              <td className="whitespace-nowrap p-4 text-right font-bold text-fin-loss font-mono">{formatCurrency(expense.amount)}</td>
-            </motion.tr>
+    <div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border/50">
+              <th className="p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans">Fecha</th>
+              <th className="p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans">Descripción limpia</th>
+              <th className="hidden p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans sm:table-cell">Categoría</th>
+              <th className="hidden p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans md:table-cell">Reembolsable</th>
+              <th className="hidden p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans lg:table-cell">Deudor</th>
+              <th className="hidden p-4 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans md:table-cell">Estado</th>
+              <th className="p-4 text-right text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans">Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((expense, i) => {
+              const isSelected = showDetail && selectedExpense?.id === expense.id
+
+              return (
+                <motion.tr
+                  key={expense.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, delay: i * 0.04 }}
+                  onClick={() => showDetail && setSelectedExpenseId(expense.id)}
+                  tabIndex={showDetail ? 0 : undefined}
+                  role={showDetail ? "button" : undefined}
+                  onKeyDown={(event) => {
+                    if (!showDetail) return
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault()
+                      setSelectedExpenseId(expense.id)
+                    }
+                  }}
+                  className={`border-b border-border/30 transition-colors hover:bg-accent/20 ${
+                    showDetail ? "cursor-pointer focus-visible:bg-accent/30 focus-visible:outline-none" : ""
+                  } ${isSelected ? "bg-primary/[0.05]" : ""}`}
+                >
+                  <td className="whitespace-nowrap p-4 text-xs text-muted-foreground font-mono">{expense.date}</td>
+                  <td className="p-4">
+                    <p className="font-semibold text-foreground font-sans">{expense.cleanDescription}</p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground sm:hidden">{expense.category ?? "Sin categoría"}</p>
+                  </td>
+                  <td className="hidden p-4 sm:table-cell">
+                    {expense.category ? <StatusBadge>{expense.category}</StatusBadge> : <StatusBadge>Sin categoría</StatusBadge>}
+                  </td>
+                  <td className="hidden p-4 md:table-cell">
+                    <StatusBadge tone={expense.reimbursable ? "warning" : "neutral"}>{expense.reimbursable ? "Sí" : "No"}</StatusBadge>
+                  </td>
+                  <td className="hidden p-4 text-xs text-muted-foreground font-sans lg:table-cell">{expense.debtor ?? "No aplica"}</td>
+                  <td className="hidden p-4 md:table-cell">
+                    <StatusBadge tone={getReimbursementTone(expense.reimbursementStatus)}>{expense.reimbursementStatus}</StatusBadge>
+                  </td>
+                  <td className="whitespace-nowrap p-4 text-right font-bold text-fin-loss font-mono">{formatCurrency(expense.amount)}</td>
+                </motion.tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {showDetail && selectedExpense && (
+        <div className="grid grid-cols-1 gap-4 border-t border-border/50 p-5 lg:grid-cols-4 lg:p-6">
+          {[
+            { label: "Descripción original", value: selectedExpense.originalDescription },
+            { label: "Descripción limpia", value: selectedExpense.cleanDescription },
+            { label: "Categoría rápida", value: selectedExpense.category ? `${selectedExpense.category} · ID ${selectedExpense.quickCategoryId}` : "Sin categoría · NULL" },
+            { label: "Reembolso", value: selectedExpense.reimbursable ? `${selectedExpense.reimbursementStatus} · ${selectedExpense.debtor}` : "No reembolsable" },
+          ].map((item) => (
+            <div key={item.label} className="rounded-lg border border-border/40 bg-muted/20 p-4">
+              <p className="text-[11px] uppercase tracking-[0.08em] text-muted-foreground font-sans">{item.label}</p>
+              <p className="mt-2 text-sm font-bold text-foreground font-sans">{item.value}</p>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
     </div>
   )
 }
@@ -699,7 +808,7 @@ function ExpenseRegisterSection() {
           ))}
         </div>
 
-        <ExpensesTable />
+        <ExpensesTable showDetail />
       </SectionPanel>
     </div>
   )
