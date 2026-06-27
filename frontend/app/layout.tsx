@@ -8,8 +8,8 @@ const _jetbrains = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "
 const _outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] })
 
 export const metadata: Metadata = {
-  title: 'Meridian — Financial Analytics Dashboard',
-  description: 'Professional financial analytics dashboard with portfolio tracking, performance metrics, risk analysis, and market overview.',
+  title: 'Dash Gastos',
+  description: 'Dashboard local para registrar, revisar y analizar gastos e ingresos personales.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body className="font-sans antialiased grain">
         {children}
         <Analytics />

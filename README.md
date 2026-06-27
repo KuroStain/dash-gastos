@@ -92,6 +92,30 @@ Pagué cuenta de la luz
 
 Si `Pagué` no existe como categoría rápida, no debe asignarse automáticamente como categoría.
 
+Para almacenar estos datos, internamente se debe realizar por separado. En el registro del gasto, debera ir el id de la categoria rapida que se encuentra almacenada en otra tabla. En caso de que la palabra no se encuentre dentro de las almacenadas, el campo quedara vacio y se almacenara la descripcion completa.
+
+Ejemplo:
+
+```txt
+Almuerzo McDonalds con amigos
+```
+
+Resultado esperado:
+
+```txt
+Tabla Categorias Rapidas
+ID    Nombre
+10    Almuerzo
+
+Tabla Gastos
+ID    Descripcion             Categoria     ...
+100   McDonalds con amigos    10
+101   Piercing de titanio     NULL
+```
+
+El caso 100 representa un caso con categoria rapida registrada.
+El caso 101 representa un caso sin categoria rapida registrada, donde se almacena en la descripcion el nombre completo y no se le asigna categoria. 
+
 ## Gasto reembolsable
 
 Un gasto reembolsable representa dinero que sale de la cuenta o billetera del usuario, pero que debería volver posteriormente.
@@ -361,12 +385,12 @@ Trabaja solo en la Etapa 1 del TODO. No implementes etapas posteriores.
 
 ### Etapa 0: Preparación del proyecto
 
-* [ ] Crear repositorio Git.
-* [ ] Copiar el template de v0 dentro de `frontend/`.
-* [ ] Eliminar el archivo `.zip` del template si ya fue descomprimido.
-* [ ] Instalar dependencias.
-* [ ] Verificar que el frontend levante correctamente.
-* [ ] Crear commit inicial con el template funcionando.
+* [x] Crear repositorio Git.
+* [x] Copiar el template de v0 dentro de `frontend/`.
+* [x] Eliminar el archivo `.zip` del template si ya fue descomprimido.
+* [x] Instalar dependencias.
+* [x] Verificar que el frontend levante correctamente.
+* [x] Crear commit inicial con el template funcionando.
 
 Resultado esperado:
 
@@ -376,12 +400,12 @@ El proyecto levanta localmente sin errores y el template visual está intacto.
 
 ### Etapa 1: Limpieza inicial del template
 
-* [ ] Revisar estructura del frontend.
-* [ ] Identificar componentes principales del dashboard.
-* [ ] Eliminar contenido de ejemplo que no sirva para Dash Gastos.
-* [ ] Mantener estilos, layout y componentes visuales útiles del template.
-* [ ] Ajustar textos visibles para que hablen de gastos, ingresos e informes.
-* [ ] No implementar lógica de negocio todavía.
+* [x] Revisar estructura del frontend.
+* [x] Identificar componentes principales del dashboard.
+* [x] Eliminar contenido de ejemplo que no sirva para Dash Gastos.
+* [x] Mantener estilos, layout y componentes visuales útiles del template.
+* [x] Ajustar textos visibles para que hablen de gastos, ingresos e informes.
+* [x] No implementar lógica de negocio todavía.
 
 Resultado esperado:
 
@@ -391,11 +415,11 @@ El frontend se ve como una base visual de Dash Gastos, pero aún sin funcionalid
 
 ### Etapa 2: Layout principal de la aplicación
 
-* [ ] Crear navegación principal.
-* [ ] Agregar accesos a Registrar gasto, Registrar ingreso, Informes y Configuraciones.
-* [ ] Definir pantalla inicial del dashboard.
-* [ ] Crear cards o secciones visuales para resumen mensual, gastos, ingresos y reembolsos pendientes.
-* [ ] Usar datos mockeados.
+* [x] Crear navegación principal.
+* [x] Agregar accesos a Registrar gasto, Registrar ingreso, Informes y Configuraciones.
+* [x] Definir pantalla inicial del dashboard.
+* [x] Crear cards o secciones visuales para resumen mensual, gastos, ingresos y reembolsos pendientes.
+* [x] Usar datos mockeados.
 
 Resultado esperado:
 
@@ -405,13 +429,13 @@ La aplicación tiene navegación y una pantalla principal clara usando datos fal
 
 ### Etapa 3: Formulario visual de registrar gasto
 
-* [ ] Crear formulario de registro de gasto.
-* [ ] Agregar campo nombre descriptivo.
-* [ ] Agregar campo monto.
-* [ ] Agregar checkbox `Es reembolsable`.
-* [ ] Mostrar campo nombre deudor solo cuando el checkbox esté activo.
-* [ ] No guardar datos todavía.
-* [ ] Validar visualmente campos obligatorios.
+* [x] Crear formulario de registro de gasto.
+* [x] Agregar campo nombre descriptivo.
+* [x] Agregar campo monto.
+* [x] Agregar checkbox `Es reembolsable`.
+* [x] Mostrar campo nombre deudor solo cuando el checkbox esté activo.
+* [x] No guardar datos todavía.
+* [x] Validar visualmente campos obligatorios.
 
 Resultado esperado:
 
@@ -421,12 +445,12 @@ Existe un formulario funcional a nivel UI para registrar gastos, pero sin persis
 
 ### Etapa 4: Lógica de categoría rápida
 
-* [ ] Crear función para detectar categoría rápida desde la primera palabra del nombre descriptivo.
-* [ ] Crear lista temporal de categorías rápidas.
-* [ ] Si la primera palabra coincide con una categoría rápida, asignarla como categoría.
-* [ ] Limpiar la descripción removiendo la categoría del texto visible.
-* [ ] Mantener descripción original internamente.
-* [ ] Agregar pruebas simples o casos manuales de validación.
+* [x] Crear función para detectar categoría rápida desde la primera palabra del nombre descriptivo.
+* [x] Crear lista temporal de categorías rápidas.
+* [x] Si la primera palabra coincide con una categoría rápida, asignarla como categoría.
+* [x] Limpiar la descripción removiendo la categoría del texto visible.
+* [x] Mantener categoria y descripción separadas internamente.
+* [x] Agregar pruebas simples o casos manuales de validación.
 
 Ejemplo:
 
